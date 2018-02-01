@@ -62,7 +62,7 @@ Finally the Hours, Minutes and Day is displayed using p5's text function. Whethe
 }
 ```
 
-A resetClock function resets all of these clock values if the application is restarted
+A resetClock function resets all of these clock values if the application is restarted.
 
 ```js
 resetClock = function(){
