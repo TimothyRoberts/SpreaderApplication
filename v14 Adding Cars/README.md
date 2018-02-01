@@ -1,4 +1,4 @@
-#Version 14: Creating an Array of Car Objects to Move Around the Canvas
+# Version 14: Creating an Array of Car Objects to Move Around the Canvas
 
 These are the global variables associated with this function:
 
