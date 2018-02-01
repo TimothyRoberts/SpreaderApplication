@@ -12,7 +12,8 @@ clockIncrement = function(){
         hours = 0;
         days ++;
     }
-
+    push();
+    translate(stageWidth + 250, 20);
     //DETERMINES IF AM/PM AND DAY/NIGHT
     if(hours >= 12){timeStamp="PM";
     }else{timeStamp = "AM"}
@@ -32,6 +33,7 @@ clockIncrement = function(){
     }else{
         text("NIGHT",200,50)
     }
+    pop();
 }
 
 resetClock = function(){

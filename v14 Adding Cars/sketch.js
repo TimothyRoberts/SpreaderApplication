@@ -9,8 +9,10 @@
   var contagionRate = 1;
   var populationInputBox,mortalityRateInputBox,VaccinationRateInputBox,contagionRateInputBox;
 
-  //CAR VARIABLES
-  var car;
+  //GLOBAL VARIABLES FOR PASSING TO CAR OBJECT
+  var cars = [];
+  var carCount = 75;
+  var carRadius = 2;
 
   // CANVAS AND STAGE DIMENSIONS
   var canvasWidth = 1440;
@@ -33,8 +35,7 @@ function setup() {
   frameRate(30);
   createInputs();
   dudesGenesis();
-
-  car = new Car(150,150);
+  carGenesis();
 
 }// END OF SET UP
 
@@ -47,12 +48,25 @@ function draw(){
   translate(margin.left,margin.top);
   rect(0,0,stageWidth,stageHeight);
   updateDudes();
+  updateCars();
   displayStats();
   clockIncrement();
   cnv.mousePressed(addSickDude);
 
-  car.show();
-  car.drive();
+  for(var i=0; i<cars.length; i++){
+    
+    cars[i].moveCar();
+    cars[i].drawCar();
+    cars[i].countCarAge()
+
+    for(var j=0; j<dudes.length; j++){
+    if (cars[i].intersects(dudes[j])){
+
+        console.log("BOM");    
+        cars[i].changeDudeState(dudes[j]);
+      }
+    }
+  }
 
 }// END OF DRAW
 
@@ -63,27 +77,6 @@ function draw(){
 // -------------------------
 // FUNCTIONS
 // -------------------------
-
-
-
-//UPDATES THE DUDES BY CALLING THEIR FUNCTIONS
-function updateDudes(){
-  for(var i=0; i<dudes.length; i++){
-        dudes[i].drawDude();
-        dudes[i].moveDude();
-        dudes[i].countDudeAge();
-        
-        for(var j=0; j<dudes.length; j++){
-        if (i != j && dudes[i].intersects(dudes[j])){    
-            dudes[i].changeDudeState(dudes[j]);
-          }
-        }
-  if (dudes[i].state == "dead"){
-            dudes.splice(i,1);
-            population--;
-        }
-  }
-}
 
 //POPULATES THE DUDES ARRAY WITH DUDE OBJECTS
 function dudesGenesis(){
@@ -104,8 +97,8 @@ function dudesGenesis(){
     if(stateGen >= vaccinationRate){state = "healthy"} // healthy
     else if(stateGen < vaccinationRate && vaccinationRate != 0){ state = "vaccinated"}
 
-    var xloc = randomGaussian(150,10); //(mean,standard deviation)
-    var yloc = randomGaussian(150,10);
+    var xloc = randomGaussian(150,20); //(mean,standard deviation)
+    var yloc = randomGaussian(150,20);
 
     var cityOneX = 50;
     var cityOneX2 = 200;
@@ -136,58 +129,82 @@ function dudesGenesis(){
     if(stateGen >= vaccinationRate){state = "healthy"} // healthy
     else if(stateGen < vaccinationRate && vaccinationRate != 0){ state = "vaccinated"}
 
-    var xloc = randomGaussian(275,6); //(mean,standard deviation)
-    var yloc = randomGaussian(275,6);
+    var xloc = randomGaussian(325,20); //(mean,standard deviation)
+    var yloc = randomGaussian(375,20);
 
-    var cityOneX = 250;
-    var cityOneX2 = 350;
+    var cityTwoX = 300;
+    var cityTwoX2 = 400;
 
-    var cityOneY = 250; 
-    var cityOneY2 = 350;
-       
+    var cityTwoY = 350; 
+    var cityTwoY2 = 400;
+
     dudes[i] = new dude(xloc,
                         yloc,
                         radius,
                         state,
                         mortalityRate,
                         contagionRate,
-                        cityOneX,
-                        cityOneY,
-                        cityOneX2,
-                        cityOneY2);
+                        cityTwoX,
+                        cityTwoY,
+                        cityTwoX2,
+                        cityTwoY2);
   }
 
-  // POPLATION LOOP 3
-  for(var i=(population1+population2); i<(population2+population1+population3); i++){
+}
+
+function carGenesis() {
+
+  for(var i=0; i<carCount; i++){ 
 
     var stateGen = floor(random(0,100));
     var state;
+    var xloc = randomGaussian(150,50); //(mean,standard deviation)
+    var yloc = randomGaussian(350,50);
+    var smoothness = 0.006;
 
-    //controls chance of dude being generated vaccinated
-    if(stateGen >= vaccinationRate){state = "healthy"} // healthy
-    else if(stateGen < vaccinationRate && vaccinationRate != 0){ state = "vaccinated"}
-
-    var xloc = randomGaussian(375,3); //(mean,standard deviation)
-    var yloc = randomGaussian(375,3);
-
-    var cityOneX = 350;
-    var cityOneX2 = 400;
-
-    var cityOneY = 350; 
-    var cityOneY2 = 400;
-       
-    dudes[i] = new dude(xloc,
-                        yloc,
-                        radius,
-                        state,
-                        mortalityRate,
-                        contagionRate,
-                        cityOneX,
-                        cityOneY,
-                        cityOneX2,
-                        cityOneY2);
+    cars[i] = new car(xloc,yloc,carRadius,"healthy", smoothness); //dude(x,y,radius,state)
   }
 }
+
+
+//UPDATES THE DUDES BY CALLING THEIR FUNCTIONS
+function updateDudes(){
+  for(var i=0; i<dudes.length; i++){
+        dudes[i].drawDude();
+        dudes[i].moveDude();
+        dudes[i].countDudeAge();
+        
+        for(var j=0; j<dudes.length; j++){
+        if (i != j && dudes[i].intersects(dudes[j])){    
+            dudes[i].changeDudeState(dudes[j]);
+          }
+        }
+  if (dudes[i].state == "dead"){
+            dudes.splice(i,1);
+            population--;
+        }
+  }
+}
+
+//UPDATES THE CARS BY CALLING THEIR FUNCTIONS
+function updateCars(){
+  for(var i=0; i<dudes.length; i++){
+        dudes[i].drawDude();
+        dudes[i].moveDude();
+        dudes[i].countDudeAge();
+        
+        for(var j=0; j<dudes.length; j++){
+        if (i != j && dudes[i].intersects(dudes[j])){    
+            dudes[i].changeDudeState(dudes[j]);
+          }
+        }
+  if (dudes[i].state == "dead"){
+            dudes.splice(i,1);
+            population--;
+        }
+  }
+}
+
 
 //ADDS A SICK DUDE WHEN YOU CLICK
 function addSickDude(){

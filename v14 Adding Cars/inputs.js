@@ -4,6 +4,7 @@
   // CODE FOR USER INPUT
   // -------------------------
   createInputs = function(){
+    push();
 
     translate(10,10);
 
@@ -26,12 +27,16 @@
     button = createButton('APPLY CHANGES');
     button.position(canvas.width-640, margin.top+205);
     button.mousePressed(setDudeAttributes);
+
+    pop();
+    
   }
 
   displayStats = function(){
 
     textSize(12);
 
+    push()
     translate((margin.left+stageWidth),margin.top);
     fill(0);
     stroke(255);
@@ -53,6 +58,7 @@
     text("Mortality Rate: ",0,55);
     text("Virulence: ",  0,100);
     text("Vaccination Rate: ",0,145);
+    pop();
 
     
   
