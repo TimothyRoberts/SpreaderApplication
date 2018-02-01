@@ -1,4 +1,4 @@
-#Creating a Clock Function
+# Creating a Clock Function
 
 These are the global variables associated with this function:
 
